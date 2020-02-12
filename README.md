@@ -40,3 +40,8 @@ G: Represents messages sent from the GUI, in this case the QML Viewer.
 T: Represents the translation of the previous statement. 
 Each entry must begin with either an M: or G: with a following statement.
 Then there must be a comma and a T: indicating what the text will be translated to.
+
+ M:message_from_controller_board=%s,T:QML_object_name_on_GUI.property=%s
+ 
+  G:message_from_GUI=%s,T:value_to_send_controller_board=%s
+  
