@@ -45,3 +45,27 @@ Then there must be a comma and a T: indicating what the text will be translated 
  
   G:message_from_GUI=%s,T:value_to_send_controller_board=%s
   
+# Technical Details
+
+The TIO Agent runs in the background and accepts inputs from the SIO Agent. 
+The translation table is typically stored with the the application at /application/src/translate.txt. 
+The TIO Agent is installed to /application/bin/tio-agent on the root file system. 
+The TIO Agent is started by the init system which executes the /etc/init.d/tio-agent script on start up.
+
+The TIO Agent excepts the following command-line options:
+
+-d or –daemon – Runs the tio-agent in the background.
+
+-f or –file= – Uses for translations.
+
+-o or –logfile= – Logs to file instead of standard error.
+
+-r or –refresh= – Auto-refreshs translation file.
+
+-s[]or –sio-port[=] – Uses TCP socket. Default is 7880.
+
+-t[]or –tio-port[=] -Uses TCP socket. Default is 7885.
+
+-v or –verbose – Prints debug messages.
+
+-h or -? | –help – Prints usage information.
