@@ -69,3 +69,9 @@ The TIO Agent excepts the following command-line options:
 -v or –verbose – Prints debug messages.
 
 -h or -? | –help – Prints usage information.
+
+# Sending Messages to your Microcontroller
+
+When you need to send messages from your QML application back to your microcontroller,
+you can use the connection plug-in (specifically, the connection.sendMessage method), 
+as described at QML Viewer Plugins.
