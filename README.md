@@ -15,4 +15,13 @@ Messages are translated using Reach’s TIO Agent. The TIO Agent uses a file cal
 which provides a list of translations. T
 he file is typically included in the same folder as the QML application.
 
-Translate.txt File Exa
+# Translate.txt File Example
+
+A simple temperature control module has a number with a Celsius temperature, 
+a number with a Fahrenheit temperature, and two buttons to raise and lower the temperature. 
+It is connected to a controller board with a heater and a thermometer. 
+When the thermometer detects a temperature change, 
+it sends the new temperature to the UI for display. 
+When the user presses the “Raise Temperature” or “Lower Temperature”, 
+the UI sends a message to raise or lower the temperature by a specified amount.
+For such a temperature control panel, the translate.txt file would look like this:
