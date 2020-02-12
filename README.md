@@ -34,3 +34,9 @@ For such a temperature control panel, the translate.txt file would look like thi
   
   G:lowerTempTo=%s,T:setTemperature=%s
   
+The %s represents the string which will be kept the same during the translation process.
+M: Represents messages sent from the controller module. 
+G: Represents messages sent from the GUI, in this case the QML Viewer. 
+T: Represents the translation of the previous statement. 
+Each entry must begin with either an M: or G: with a following statement.
+Then there must be a comma and a T: indicating what the text will be translated to.
