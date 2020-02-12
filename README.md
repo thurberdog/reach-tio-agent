@@ -6,7 +6,7 @@ messages being sent need to be translated.
 We have created a set of tools called the Serial Input/Output Agent (SIO) and 
 Translator Input Ouput Agent (TIO) agents to make this translation happen.
 
-#TIO Agent
+# TIO Agent
 
 TIO Agent stands for Translator Input Output Agent. 
 Messages sent from the Controller Board and received by the QML GUI should not necessarily be the same, 
