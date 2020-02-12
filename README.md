@@ -25,3 +25,12 @@ it sends the new temperature to the UI for display.
 When the user presses the “Raise Temperature” or “Lower Temperature”, 
 the UI sends a message to raise or lower the temperature by a specified amount.
 For such a temperature control panel, the translate.txt file would look like this:
+
+ M:celsius_temperature_from_thermometer=%s,T:celsius_display.text=%s
+ 
+  M:fahrenheit_temperature_from_thermometer=%s,T:fahrenheit_display.text=%s
+  
+  G:raiseTempTo=%s,T:setTemperature=%s
+  
+  G:lowerTempTo=%s,T:setTemperature=%s
+  
