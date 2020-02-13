@@ -422,6 +422,7 @@ void translate_micro_msg(const TranslatorState *state, const char* inMsg,
 {
     translate_msg(inMsg, outMsg, outMsgSize, &state->microTranslationMap,
         state->microDefault);
+	printf(outMsg);
 }
 
 /**
