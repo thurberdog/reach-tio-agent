@@ -80,7 +80,7 @@ int readLine2(int socketFd, char *outMsg, size_t msgSize,
     const size_t cnt = recv(socketFd, buffer->store + buffer->pos,
         sizeof(buffer->store) - buffer->pos, 0);
     if (cnt <= 0) {
-        LogMsg(LOG_INFO, "[TIO] recv() from %s failed, client closed\n", end);
+        LogMsg(LOG_INFO, "recv() from %s failed, client closed\n", end);
         close(socketFd);
         buffer->pos = 0;  /* flush any remaining buffered characters */
         return -1;
@@ -98,9 +98,10 @@ int readLine2(int socketFd, char *outMsg, size_t msgSize,
                 /* copy the accumulated characters including \n or \r to outMsg */
                 bcopy(buffer->store, outMsg, i++);
 
-				LogMsg(LOG_INFO, "[TIO] received => \"%s\"; from %s\n", outMsg, end);
                 /* nul terminate the string and get rid of the \n or \r character */
                 outMsg[i-1] = '\0';
+
+                LogMsg(LOG_INFO, "received \"%s\" from %s\n", outMsg, end);
 
                 /* squish whatever may remain to the start of the store */
                 buffer->pos += cnt - i;
@@ -114,7 +115,7 @@ int readLine2(int socketFd, char *outMsg, size_t msgSize,
 
         if (i >= sizeof(buffer->store)) {
             /* the temporary buffer is full but no newline so flush it */
-            LogMsg(LOG_ERR, "[TIO] %s buffer overflow, flushing\n", end);
+            LogMsg(LOG_ERR, "%s buffer overflow, flushing\n", end);
             buffer->pos = 0;
         }
 

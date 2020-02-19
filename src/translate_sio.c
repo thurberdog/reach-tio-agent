@@ -91,8 +91,6 @@ int tioSioSocketInit(unsigned short port, const char *socketName)
 
 void tioSioSocketWrite(int sioSocketFd, const char* buf)
 {
-	LogMsg(LOG_INFO, "[TIO] sending => \"%s\"\n", buf);
-	
     const size_t cnt = strlen(buf);
     if ((cnt > 0) && send(sioSocketFd, buf, cnt, 0) != cnt) {
         perror("send to sio_agent socket failed");

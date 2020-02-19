@@ -20,10 +20,6 @@ void translate_add_mapping(TranslatorState *state, const char*,
 void translate_reset_mapping(TranslatorState *state);
 int compareTranslations(const struct rbtree_node *first,
     const struct rbtree_node *second);
-void initTranslations(TranslatorState *state, const unsigned short mapSize);
-void freeTranslations(TranslatorState *state);
-
-int maxMappingSize = -1;
 
 /**
  * This structure is a single record of information which is placed into a
@@ -54,7 +50,7 @@ struct TranslatorState
     char microDefault[MAX_LINE_SIZE];
 
     /* the pool of translation structures that will be put into the maps */
-    struct translate_msg* translations;
+    struct translate_msg translations[MAX_MSG_MAP_SIZE];
 
     /* the map of translation messages for messages received from the GUI */
     struct rbtree guiTranslationMap;
@@ -72,7 +68,7 @@ struct TranslatorState
  */
 TranslatorState *GetTranslatorState()
 {
-    static TranslatorState state;        
+    static TranslatorState state;
     return &state;
 }
 
@@ -114,7 +110,7 @@ time_t loadTranslations(TranslatorState *state, const char* filePath,
     if (doReload) {
         inputFd = open(filePath, O_RDONLY);
         if (inputFd == -1) {
-            LogMsg(LOG_ERR, "[TIO] error opening file %s\n", filePath);
+            LogMsg(LOG_ERR, "error opening file %s\n", filePath);
             return 0;
         }
 
@@ -136,7 +132,7 @@ time_t loadTranslations(TranslatorState *state, const char* filePath,
             dieWithSystemMessage("error closing file");
         }
 
-        LogMsg(LOG_INFO, "[TIO] loaded translation file \"%s\"\n", filePath);
+        LogMsg(LOG_INFO, "loaded translation file \"%s\"\n", filePath);
     }
 
     return filestat.st_mtime;
@@ -162,7 +158,9 @@ void translate_add_mapping(TranslatorState *state, const char *msg,
 
     /* if first ch is a # or / drop it */
     if (msg[0] == '#' || msg[0] == '/') {
-        LogMsg(LOG_INFO, "[TIO] dropping comment on line %d: %s\n", lineNumber, msg);
+#ifdef DEBUG
+        LogMsg(LOG_INFO, "dropping comment on line %d: %s\n", lineNumber, msg);
+#endif
         return;
     }
 
@@ -223,12 +221,12 @@ void translate_add_mapping(TranslatorState *state, const char *msg,
     }
 
     /* allocate a translation from array of them if any left */
-    if (state->translationCount >= maxMappingSize) {
+    if (state->translationCount >= MAX_MSG_MAP_SIZE) {
         static int errorPrinted = 0;
         if (!errorPrinted) {
             LogMsg(LOG_ERR,
-                "[TIO] too many translation rules, maximum of %d allowed\n",
-                maxMappingSize);
+                "too many translation rules, maximum of %d allowed\n",
+                MAX_MSG_MAP_SIZE);
             errorPrinted = 1;
         }
     } else {
@@ -285,7 +283,7 @@ void translate_add_mapping(TranslatorState *state, const char *msg,
         if (ret != 0) {
             const struct translate_msg *originalNode = rbtree_container_of(ret,
                 struct translate_msg, node);
-            LogMsg(LOG_ERR, "[TIO] translation for key \"%s\" on line %d in %s map "
+            LogMsg(LOG_ERR, "translation for key \"%s\" on line %d in %s map "
                 "already defined on line %d.\n", key, lineNumber, mapName,
                 originalNode->lineNumber);
         }
@@ -354,19 +352,24 @@ static void translate_msg(const char* inMsg, char* outMsg, size_t outMsgSize,
     if (node == 0) {
         /* not found; use the default */
         if (strlen(defaultMsg) > 0) {
-            LogMsg(LOG_INFO, "[TIO] sending default message\n");
+#ifdef DEBUG
+            LogMsg(LOG_INFO, "sending default message\n");
+#endif
             sprintf(outMsg, defaultMsg, tmp);
         } else {
-            LogMsg(LOG_INFO, "[TIO] sending untranslated message\n");
+#ifdef DEBUG
+            LogMsg(LOG_INFO, "sending untranslated message\n");
+#endif
             safe_strncpy(outMsg, inMsg, outMsgSize);
         }
     } else {
         /* translation found in map, format outMsg accordingly */
         const struct translate_msg *translation =
             rbtree_container_of(node, struct translate_msg, node);
-
-        LogMsg(LOG_INFO, "[TIO] found key => \"%s\"; returning => \"%s\"\n", translation->key,
+#ifdef DEBUG
+        LogMsg(LOG_INFO, "found key %s returning msg %s", translation->key,
             translation->msg);
+#endif
 
         if (has_value) {
             switch (translation->fmt_spec) {
@@ -422,7 +425,6 @@ void translate_micro_msg(const TranslatorState *state, const char* inMsg,
 {
     translate_msg(inMsg, outMsg, outMsgSize, &state->microTranslationMap,
         state->microDefault);
-	printf(outMsg);
 }
 
 /**
@@ -458,28 +460,3 @@ int compareTranslations(const struct rbtree_node *first,
     return strcmp(str1, str2);
 }
 
-/**
- * This function allocates memory for a variable number of translations.
- *
- * @param state the program's set of translations
- * @param mapSize number to set total mappings in the translate file
- *
- */
-void initTranslations(TranslatorState *state, const unsigned short mapSize)
-{
-    state->translations = malloc(mapSize * sizeof(struct translate_msg));
-    maxMappingSize = mapSize;
-    LogMsg(LOG_INFO, "[TIO] translations size set to %d\n", maxMappingSize);
-}
-
-/**
- * This function frees translations from memory.
- *
- * @param state the program's set of translations
- *
- */
-void freeTranslations(TranslatorState *state)
-{
-    free(state->translations);
-    LogMsg(LOG_INFO, "[TIO] translations free()\n");
-}

@@ -13,7 +13,7 @@
 /* definitions for open source lib_tree */
 #include "libtree.h"
 
-#define MAX_MSG_MAP_SIZE 400
+#define MAX_MSG_MAP_SIZE 5000
 #define MAX_LINE_SIZE 2048
 
 #define FROM_GUI 'G'

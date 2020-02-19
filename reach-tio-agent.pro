@@ -2,13 +2,12 @@ TEMPLATE = app
 CONFIG += console
 CONFIG -= app_bundle
 CONFIG -= qt
+VERSION = 1.0.1
 
-VERSION = 1.1.1
 # add #define for the version
 DEFINES += TIO_VERSION=\\\"$$VERSION\\\"
 
-TARGET=tio-agent
-
+TARGET = tio-agent
 SOURCES += src/logmsg.c \
     src/rb.c \
     src/read_line.c \
